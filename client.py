@@ -16,11 +16,11 @@ class EmailTriageEnv(EnvClient[EmailTriageAction, EmailTriageObservation]):
         Initialize the email triage environment client.
         
         Args:
-            base_url: URL of the environment server (default: http://localhost:7860)
+            base_url: URL of the environment server (default: http://localhost:8000)
             task: Difficulty level - "easy", "medium", or "hard"
         """
         if base_url is None:
-            base_url = "http://localhost:7860"
+            base_url = "http://localhost:8000"
         super().__init__(base_url)
         self.task = task
     

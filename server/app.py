@@ -4,6 +4,8 @@ from typing import Dict, Any, Optional
 import sys
 import os
 
+
+
 # Add parent directory to path to import modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -63,7 +65,7 @@ def state():
 def main():
     """Main entry point for the server"""
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=7860)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 # ✅ FIX 2: Added if __name__ == "__main__" block
 if __name__ == "__main__":
