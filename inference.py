@@ -2,7 +2,7 @@ import asyncio
 import os
 from typing import List, Optional
 from openai import OpenAI
-from my_env_v4 import MyEnvV4Action, MyEnvV4Env
+from server.my_env_v4 import MyEnvV4Action, MyEnvV4Env
 
 # ✅ Use supported HF model
 API_BASE_URL = "https://router.huggingface.co/v1"
