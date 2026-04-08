@@ -1,6 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Any, Optional
+import sys
+import os
+
+# Add parent directory to path to import modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from my_env_v4 import MyEnvV4Env, MyEnvV4Action
 
 app = FastAPI(title="OpenEnv Email Triage")
@@ -52,3 +58,13 @@ def state():
     if env_instance is None:
         return {"status": "not_initialized"}
     return env_instance.state()
+
+# ✅ FIX 1: Added main() function
+def main():
+    """Main entry point for the server"""
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+
+# ✅ FIX 2: Added if __name__ == "__main__" block
+if __name__ == "__main__":
+    main()
