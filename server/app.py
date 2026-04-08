@@ -9,7 +9,7 @@ import os
 # Add parent directory to path to import modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from my_env_v4 import MyEnvV4Env, MyEnvV4Action
+from server.my_env_v4 import MyEnvV4Env, MyEnvV4Action
 
 app = FastAPI(title="OpenEnv Email Triage")
 
