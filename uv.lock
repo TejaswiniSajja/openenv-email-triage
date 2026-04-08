@@ -1,16 +1,22 @@
-version = 1
-requires-python = ">=3.10"
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[[package]]
+[project]
 name = "openenv-email-triage"
 version = "1.0.0"
-source = { editable = "." }
-
-[[package]]
-name = "openenv-core"
-version = "0.2.0"
-source = { registry = "https://pypi.org/simple" }
+description = "OpenEnv environment for email triage"
+requires-python = ">=3.10"
 dependencies = [
-    { name = "pydantic" },
-    { name = "fastapi" },
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "pydantic>=2.5.0",
+    "openai>=1.6.0",
+    "openenv-core>=0.2.0",  # <--- CRITICAL: Add this line
 ]
+
+[project.scripts]
+server = "server.app:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["server"]
