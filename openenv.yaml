@@ -1,0 +1,37 @@
+name: Email Triage Assistant
+version: 1.0.0
+description: |
+  An environment where an AI agent must triage and respond to customer support emails.
+  The agent can read, categorize, draft responses, and escalate emails appropriately.
+  Real-world task for customer service automation.
+
+author: Your Name
+tags:
+  - real-world
+  - email-triage
+  - customer-support
+  - decision-making
+
+observation_space:
+  type: dict
+  properties:
+    current_email: string
+    email_queue: integer
+    inbox_size: integer
+    time_step: integer
+    previous_actions: list
+
+action_space:
+  type: dict
+  properties:
+    action_type:
+      type: string
+      enum: [categorize, draft_response, escalate, mark_spam, request_info]
+    parameters:
+      type: dict
+
+reward_range:
+  min: 0.0
+  max: 1.0
+
+max_episode_steps: 50
