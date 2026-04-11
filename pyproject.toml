@@ -16,5 +16,4 @@ dependencies = [
 ]
 
 [project.scripts]
-# ✅ FIX 3: Changed from app:app to app:main
 server = "server.app:main"
