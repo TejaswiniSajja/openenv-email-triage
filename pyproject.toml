@@ -1,3 +1,5 @@
+# Replace pyproject.toml with correct content
+@'
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -9,7 +11,7 @@ description = "OpenEnv environment for email triage"
 requires-python = ">=3.10"
 dependencies = [
     "fastapi>=0.104.0",
-    "uvicorn>=0.24.0",
+    "uvicorn>=0.24.0", 
     "pydantic>=2.5.0",
     "openai>=1.6.0",
     "openenv-core>=0.2.0",
@@ -17,3 +19,4 @@ dependencies = [
 
 [project.scripts]
 server = "server.app:main"
+'@ | Out-File -FilePath pyproject.toml -Encoding utf8
