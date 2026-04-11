@@ -14,13 +14,13 @@ RUN uv venv && \
     . .venv/bin/activate && \
     uv pip install -r requirements.txt
 
-# Copy application files
+# Copy application files - FIXED: my_env_v4.py is in server folder
 COPY server/ ./server/
-COPY my_env_v4.py ./
 COPY inference.py ./
 COPY client.py ./
 COPY models.py ./
 COPY graders.py ./
+COPY openenv.yaml ./
 
 # Set environment variables
 ENV PYTHONPATH=/app
