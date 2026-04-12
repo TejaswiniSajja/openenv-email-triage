@@ -5,12 +5,13 @@ import uvicorn
 import sys
 import os
 
-# Add current directory to path for imports
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import from same directory
+# Import from parent directory
 from my_env_v4 import MyEnvV4Env, MyEnvV4Action
 
+# This MUST be named 'app' for openenv.yaml
 app = FastAPI(title="Email Triage Environment")
 
 # Store environment instances
@@ -75,8 +76,8 @@ async def get_state(env_id: str = "env_easy"):
         "queue_size": len(env.email_queue)
     }
 
+# This is for local running
 def main():
-    """Main entry point for the server"""
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 if __name__ == "__main__":

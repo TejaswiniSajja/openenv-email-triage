@@ -65,7 +65,7 @@ Thumbs.db
 *.pid.lock
 .env
 .venv
-
+.qodo
 # Testing
 .pytest_cache/
 .coverage

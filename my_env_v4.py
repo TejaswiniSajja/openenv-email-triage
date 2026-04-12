@@ -1,4 +1,4 @@
-# my_env_v4.py - Updated with varied decimal rewards
+# my_env_v4.py - Updated with async reset
 import random
 import asyncio
 from typing import Tuple, Dict, Any, Optional
@@ -61,7 +61,6 @@ class MyEnvV4Env:
         self.time_step = 0
         self.total_reward = 0.0
         self.conversation_history = []
-        self.reset()
     
     @classmethod
     async def from_docker_image(cls, image_name: str = None):
@@ -73,7 +72,7 @@ class MyEnvV4Env:
                 task = "hard"
         return cls(task=task)
     
-    def reset(self) -> MyEnvV4StepResult:
+    async def reset(self) -> MyEnvV4StepResult:  # ← ADDED 'async' HERE
         self.time_step = 0
         self.total_reward = 0.0
         self.conversation_history = []
@@ -145,7 +144,7 @@ class MyEnvV4Env:
         )
     
     def _grade_action(self, message: str) -> float:
-        """Returns varied decimal rewards (not just .0, .5, .8, etc.)"""
+        """Returns varied decimal rewards based on task difficulty"""
         
         if self.current_email_index >= len(self.email_queue):
             return 0.0
@@ -154,7 +153,7 @@ class MyEnvV4Env:
         email_text = f"{current_email['subject']} {current_email['body']}".lower()
         message_lower = message.lower()
         
-        # EASY TASK - Spam detection with varied scores
+        # EASY TASK - Spam detection
         if self.task == "easy":
             spam_keywords = ["lottery", "viagra", "click", "winner", "prize", "discount"]
             spam_count = sum(1 for word in spam_keywords if word in email_text)
@@ -162,28 +161,24 @@ class MyEnvV4Env:
             
             if is_spam:
                 if "spam" in message_lower or "mark" in message_lower:
-                    # Perfect spam detection: 0.95-1.0 range
-                    return 0.95 + (spam_count * 0.0125)  # Can be 0.9625, 0.975, etc.
+                    return 0.95 + (spam_count * 0.0125)
                 elif "legitimate" in message_lower:
-                    return 0.15 + (random.random() * 0.1)  # 0.15-0.25
+                    return 0.15 + (random.random() * 0.1)
                 else:
-                    return 0.05 + (random.random() * 0.1)  # 0.05-0.15
+                    return 0.05 + (random.random() * 0.1)
             else:
                 if "legitimate" in message_lower:
-                    # Perfect legitimate detection: 0.85-0.95 range
                     return 0.85 + (random.random() * 0.1)
                 elif "spam" in message_lower:
                     return 0.10 + (random.random() * 0.1)
                 else:
                     return 0.30 + (random.random() * 0.15)
         
-        # MEDIUM TASK - Response quality with fine-grained scoring
+        # MEDIUM TASK - Response quality
         elif self.task == "medium":
-            # Check response quality metrics
             score = 0.0
             word_count = len(message.split())
             
-            # Length score (optimal is 20-50 words)
             if 20 <= word_count <= 50:
                 score += 0.35
             elif 10 <= word_count <= 100:
@@ -191,40 +186,34 @@ class MyEnvV4Env:
             else:
                 score += 0.05 + (random.random() * 0.1)
             
-            # Professional tone
             professional_words = ["apologize", "sorry", "thank", "appreciate", "understand", "help", "resolve"]
             professional_count = sum(1 for word in professional_words if word in message_lower)
             score += min(0.35, professional_count * 0.07)
             
-            # Actionable content
             action_words = ["will", "can", "please", "let", "investigate", "process", "refund", "escalate"]
             action_count = sum(1 for word in action_words if word in message_lower)
             score += min(0.30, action_count * 0.06)
             
-            # Specific to complaint handling
             if "waiting" in email_text or "unacceptable" in email_text:
                 if any(word in message_lower for word in ["apologize", "sorry"]):
                     score += 0.15
                 if any(word in message_lower for word in ["immediately", "asap", "urgent"]):
                     score += 0.10
-            
-            # Specific to thank you emails
             elif "thank" in email_text:
                 if any(word in message_lower for word in ["welcome", "glad", "happy", "pleasure"]):
                     score += 0.20
             
             return min(0.95, score + (random.random() * 0.05))
         
-        # HARD TASK - Complex resolution with very fine-grained scoring
+        # HARD TASK - Complex resolution
         else:
             score = 0.0
             step_num = len(self.conversation_history)
             
-            # Step 1: Categorization (first interaction)
             if step_num == 0:
                 if "billing" in email_text or "refund" in email_text:
                     if "billing" in message_lower:
-                        score = 0.3125  # Specific decimal
+                        score = 0.3125
                     elif "refund" in message_lower:
                         score = 0.4375
                     else:
@@ -238,8 +227,6 @@ class MyEnvV4Env:
                         score = 0.1875
                 else:
                     score = 0.25
-            
-            # Step 2: Resolution action
             elif step_num == 1:
                 if "billing" in email_text:
                     if "refund" in message_lower or "process" in message_lower:
@@ -257,8 +244,6 @@ class MyEnvV4Env:
                         score = 0.4375
                 else:
                     score = 0.5
-            
-            # Step 3: Follow-up / Resolution
             else:
                 if "resolved" in message_lower or "complete" in message_lower:
                     score = 0.9375
@@ -269,9 +254,7 @@ class MyEnvV4Env:
                 else:
                     score = 0.5625
             
-            # Add tiny random variation (0.001 to 0.009)
             score += random.randint(1, 9) / 1000
-            
             return min(0.999, score)
     
     async def close(self):

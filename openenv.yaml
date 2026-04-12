@@ -1,29 +1,18 @@
-name: Email Triage Assistant
-version: 1.0.0
-description: |
-  An environment where an AI agent must triage and respond to customer support emails.
+spec_version: 1
+app: server.app:app
 
-author: Your Name
-tags:
-  - email-triage
-  - customer-support
-
-observation_space:
-  type: dict
-  properties:
-    current_email: string
-    email_queue: integer
-    time_step: integer
-
-action_space:
-  type: dict
-  properties:
-    action_type:
-      type: string
-      enum: [categorize, draft_response, escalate, mark_spam, request_info]
-
-reward_range:
-  min: 0.0
-  max: 1.0
-
-max_episode_steps: 50
+tasks:
+  - id: easy_task
+    name: Easy Task
+    difficulty: easy
+    grader: graders:EasyTaskGrader
+    
+  - id: medium_task
+    name: Medium Task
+    difficulty: medium
+    grader: graders:MediumTaskGrader
+    
+  - id: hard_task
+    name: Hard Task
+    difficulty: hard
+    grader: graders:HardTaskGrader
